@@ -1,0 +1,20 @@
+# Ignore Markdown and non-code files
+*.md
+*.markdown
+*.mdx
+*.txt
+*.csv
+*.log
+*.json
+*.yaml
+*.yml
+*.xml
+*.ini
+*.cfg
+
+# Ignore non-code folders
+.claude/
+.playwright-cli/
+audit-homecontrol-v2/
+audit-homecontrol-v3/
+output/
