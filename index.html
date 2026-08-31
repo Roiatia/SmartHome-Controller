@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HomeControl Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app">
+      <aside class="side-rail" aria-label="ניווט ראשי">
+        <div class="brand-mark" aria-label="HomeControl"><span class="brand-mark__grid"></span></div>
+        <nav class="rail-nav">
+          <button class="rail-button is-active" data-view="overview" aria-label="סקירה"><span data-icon="dashboard"></span></button>
+          <button class="rail-button" data-view="rooms" aria-label="חדרים"><span data-icon="rooms"></span></button>
+          <button class="rail-button" data-view="scenes" aria-label="סצנות"><span data-icon="scenes"></span></button>
+          <button class="rail-button" data-view="climate" aria-label="אקלים"><span data-icon="climate"></span></button>
+          <button class="rail-button" data-view="settings" aria-label="הגדרות"><span data-icon="settings"></span></button>
+        </nav>
+        <button class="rail-button rail-button--muted" id="themeToggle" aria-label="החלפת מצב תצוגה"><span data-icon="moon"></span></button>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <section class="topbar__identity">
+            <p class="eyebrow">HomeControl</p>
+            <h1 id="viewTitle">לוח שליטה</h1>
+            <p id="viewSubtitle">תצוגת הבית הראשית, מוכנה לחיבור מכשירים אמיתיים בהמשך.</p>
+          </section>
+          <section class="topbar__status" aria-label="סטטוס מערכת">
+            <div class="status-pill status-pill--online"><span class="pulse-dot"></span><span>מקומי ומאובטח</span></div>
+            <div class="clock-card"><span id="clockTime">--:--</span><small id="clockDate">טוען תאריך</small></div>
+            <button class="icon-text-button" id="openCustomize"><span data-icon="sliders"></span><span>התאמה</span></button>
+            <button class="primary-button" id="openAddDevice"><span data-icon="plus"></span><span>מכשיר חדש</span></button>
+          </section>
+        </header>
+
+        <section class="alert-strip" id="offlineAlert" hidden>
+          <span data-icon="warning"></span>
+          <span>אין חיבור לשרת הבית. הממשק מציג את המצב האחרון שנשמר.</span>
+        </section>
+
+        <section class="view-panel is-active" id="overviewView" data-panel="overview">
+          <div class="overview-grid">
+            <section class="house-panel">
+              <div>
+                <p class="section-label">מצב בית</p>
+                <h2 id="houseModeLabel">בית פעיל</h2>
+              </div>
+              <div class="mode-selector" id="houseModes" aria-label="בחירת מצב בית"></div>
+            </section>
+            <section class="metric-strip" aria-label="מדדים מרכזיים">
+              <article class="metric-item"><span class="metric-item__icon" data-icon="temperature"></span><strong id="avgTemp">24.1</strong><small>ממוצע מעלות</small></article>
+              <article class="metric-item"><span class="metric-item__icon" data-icon="light"></span><strong id="lightsOn">0</strong><small>אורות דולקים</small></article>
+              <article class="metric-item"><span class="metric-item__icon" data-icon="power"></span><strong id="activeDevices">0</strong><small>מכשירים פעילים</small></article>
+              <article class="metric-item"><span class="metric-item__icon" data-icon="shield"></span><strong>Local</strong><small>גישה פנימית בלבד</small></article>
+            </section>
+          </div>
+
+          <section class="scene-band">
+            <div class="section-heading">
+              <div><p class="section-label">סצנות מהירות</p><h2>פעולות לבית כולו</h2></div>
+              <button class="subtle-button" data-action="edit-scenes"><span data-icon="edit"></span><span>עריכה</span></button>
+            </div>
+            <div class="scene-list" id="quickScenes"></div>
+          </section>
+
+          <section class="dashboard-layout">
+            <div class="section-heading">
+              <div><p class="section-label">מסך השליטה</p><h2>ווידג׳טים לפי סדר אישי</h2></div>
+              <span class="hint">גרור כדי לסדר מחדש</span>
+            </div>
+            <div class="widget-grid" id="widgetGrid"></div>
+          </section>
+        </section>
+
+        <section class="view-panel" id="roomsView" data-panel="rooms">
+          <div class="room-shell">
+            <aside class="room-list" id="roomList" aria-label="רשימת חדרים"></aside>
+            <section class="room-detail">
+              <div class="room-detail__header">
+                <div>
+                  <p class="section-label">חדר נבחר</p>
+                  <h2 id="roomTitle">סלון</h2>
+                  <p id="roomMeta">מכשירים פעילים וסטטוס בזמן אמת.</p>
+                </div>
+                <button class="icon-text-button" id="addRoomDevice"><span data-icon="plus"></span><span>הוסף לחדר</span></button>
+              </div>
+              <div class="device-grid" id="deviceGrid"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view-panel" id="scenesView" data-panel="scenes">
+          <div class="section-heading section-heading--wide">
+            <div><p class="section-label">סצנות</p><h2>תרחישים שניתן להפעיל בלחיצה אחת</h2></div>
+            <button class="primary-button" id="createScene"><span data-icon="plus"></span><span>סצנה חדשה</span></button>
+          </div>
+          <div class="scene-manager" id="sceneManager"></div>
+        </section>
+
+        <section class="view-panel" id="climateView" data-panel="climate">
+          <div class="climate-board">
+            <section class="thermostat-panel">
+              <p class="section-label">אקלים ראשי</p>
+              <div class="thermostat-dial">
+                <button class="dial-button" id="tempDown" aria-label="הורדת טמפרטורה"><span data-icon="minus"></span></button>
+                <div class="dial-reading"><strong id="targetTemp">23</strong><span>מעלות יעד</span></div>
+                <button class="dial-button" id="tempUp" aria-label="העלאת טמפרטורה"><span data-icon="plus"></span></button>
+              </div>
+              <div class="segmented-control" id="climateModes"></div>
+            </section>
+            <section class="climate-devices" id="climateDevices"></section>
+          </div>
+        </section>
+
+        <section class="view-panel" id="settingsView" data-panel="settings">
+          <div class="settings-grid">
+            <section class="settings-panel">
+              <p class="section-label">מראה</p>
+              <h2>צבעי ממשק</h2>
+              <div class="swatch-list" id="accentSwatches"></div>
+            </section>
+            <section class="settings-panel">
+              <p class="section-label">גישה</p>
+              <h2>מצב iPad</h2>
+              <div class="setting-row">
+                <div><strong>תצוגה נקייה</strong><span>מסתירה פעולות ניהול שאינן נחוצות ביומיום.</span></div>
+                <label class="switch"><input type="checkbox" id="kioskToggle" checked /><span></span></label>
+              </div>
+              <div class="setting-row">
+                <div><strong>אזהרת חיבור</strong><span>מציגה פס ברור כששרת הבית לא זמין.</span></div>
+                <label class="switch"><input type="checkbox" id="offlineToggle" /><span></span></label>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+
+      <aside class="customizer" id="customizerPanel" aria-label="התאמת ממשק" aria-hidden="true">
+        <div class="customizer__header">
+          <div><p class="section-label">התאמה אישית</p><h2>מה יופיע במסך הראשי</h2></div>
+          <button class="icon-button" id="closeCustomize" aria-label="סגור"><span data-icon="close"></span></button>
+        </div>
+        <div class="customizer__section"><h3>ווידג׳טים</h3><div id="widgetToggles" class="toggle-list"></div></div>
+        <div class="customizer__section"><h3>צבע מוביל</h3><div class="swatch-list swatch-list--compact" id="panelSwatches"></div></div>
+      </aside>
+
+      <div class="modal-backdrop" id="modalBackdrop" hidden></div>
+      <section class="modal" id="deviceModal" role="dialog" aria-modal="true" aria-labelledby="deviceModalTitle" hidden>
+        <div class="modal__header">
+          <div><p class="section-label">חיבור עתידי</p><h2 id="deviceModalTitle">הוספת מכשיר חדש</h2></div>
+          <button class="icon-button" id="closeDeviceModal" aria-label="סגור"><span data-icon="close"></span></button>
+        </div>
+        <form id="deviceForm" class="device-form">
+          <label><span>שם מכשיר</span><input name="name" required placeholder="לדוגמה: תאורת אי מטבח" /><small>אפשר לשנות את השם בכל רגע.</small></label>
+          <label><span>סוג</span><select name="type"><option value="light">תאורה</option><option value="switch">מתג</option><option value="climate">מזגן</option><option value="sensor">חיישן</option><option value="plug">שקע חכם</option></select></label>
+          <label><span>חדר</span><select name="room" id="roomSelect"></select></label>
+          <label><span>חיבור</span><select name="source"><option value="manual">ידני עכשיו, Home Assistant בהמשך</option><option value="home-assistant">Home Assistant</option><option value="matter">Matter</option><option value="zigbee">Zigbee</option><option value="wifi">Wi-Fi</option></select></label>
+          <div class="form-actions">
+            <button type="button" class="subtle-button" id="cancelDevice">ביטול</button>
+            <button type="submit" class="primary-button"><span data-icon="plus"></span><span>הוסף לממשק</span></button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
