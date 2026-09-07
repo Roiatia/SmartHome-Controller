@@ -900,7 +900,7 @@ button {
 }
 
 .toggle.is-on span {
-  transform: translateX(-28px);
+  transform: translateX(-32px);
 }
 
 .range {

@@ -6,6 +6,7 @@
 *.csv
 *.log
 *.json
+!vercel.json
 *.yaml
 *.yml
 *.xml
